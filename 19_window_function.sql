@@ -13,9 +13,20 @@ WITH tb_clientes_dia AS (
 
     GROUP BY idCliente, dtDia
 
+),
+
+tb_lag AS (
+
+        SELECT *,
+                sum(qtdeTransacao) OVER (PARTITION BY IdCliente ORDER BY dtDIa) AS acum,
+                lag(qtdeTransacao) OVER (PARTITION BY idCliente ORDER BY dtDia) AS lagTransacao
+
+        FROM tb_clientes_dia
+
 )
 
 SELECT *,
-        sum(qtdeTransacao) OVER (PARTITION BY IdCliente ORDER BY dtDIa) AS acum,
-        lag(qtdeTransacao) OVER (PARTITION BY idCliente ORDER BY dtDia) AS lagTransacao
-FROM tb_clientes_dia
+        1. *qtdeTransacao / lagTransacao
+
+FROM tb_lag
+
